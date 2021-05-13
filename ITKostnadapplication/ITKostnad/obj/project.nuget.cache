@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lqEhZtEDz50LHD0gJGd5FUeP1oYA249NSS0ycM7mH9+M2Wtq8ZNk0W9l52rX2nWP7WhDa55dUbFCAih4jhK5qA==",
+  "dgSpecHash": "mprQM2GqQFEGe763DygEMSTtSZhgtI9YhepvFsUmPJ+pimVc53BJVEVhONaRb+q1BVNYGPvM26AKWssmDJUBYA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\github\\ITKostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj",
+  "projectFilePath": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\gitlab\\itkostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ze0373\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\ze0373\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",

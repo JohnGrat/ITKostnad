@@ -10,5 +10,7 @@ namespace ITKostnad.Models
         public string ComputerOU { get; set; }
         public string UserOU { get; set; }
         public string Domain { get; set; }
+        public string ServiceAccount { get; set; }
+        public string ServiceAccountPassword { get; set; }
     }
 }

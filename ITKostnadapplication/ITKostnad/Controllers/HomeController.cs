@@ -23,6 +23,8 @@ namespace ITKostnad.Controllers
         private static string Domain;
         private static string ComputerOU;
         private static string UserOU;
+        private static string ServiceAccount;
+        private static string ServiceAccountPassword;
 
         public HomeController(ILogger<HomeController> logger, IOptions<AppSettingsModel> app)
         {
@@ -32,6 +34,8 @@ namespace ITKostnad.Controllers
             Domain = _appSettings.Value.Domain;
             ComputerOU = _appSettings.Value.ComputerOU;
             UserOU = _appSettings.Value.UserOU;
+            ServiceAccount = _appSettings.Value.ServiceAccount;
+            ServiceAccountPassword = _appSettings.Value.ServiceAccountPassword;
         }
 
         public IActionResult Index()
@@ -83,7 +87,7 @@ namespace ITKostnad.Controllers
             //MBS.com My Domain Controller which i created 
             //OU=DevOU --Organizational Unit which i created 
             //and create users and groups inside it 
-            var ctx = new PrincipalContext(ContextType.Domain, Domain, UserOU);
+            var ctx = new PrincipalContext(ContextType.Domain, Domain, UserOU, ServiceAccount, ServiceAccountPassword);
             UserPrincipal userPrin = new UserPrincipal(ctx);
             userPrin.Name = "*";
             var searcher = new System.DirectoryServices.AccountManagement.PrincipalSearcher();
@@ -109,7 +113,7 @@ namespace ITKostnad.Controllers
         {
 
             List<ComputerModel> ADComputers = new List<ComputerModel>();
-            var ctx = new PrincipalContext(ContextType.Domain, Domain, ComputerOU);
+            var ctx = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
             ComputerPrincipal compPrin = new ComputerPrincipal(ctx);
             compPrin.Name = "*";
             var searcher = new System.DirectoryServices.AccountManagement.PrincipalSearcher();
@@ -135,7 +139,7 @@ namespace ITKostnad.Controllers
                 ComputerModel myComputer = new ComputerModel();
 
                 PrincipalContext context = new PrincipalContext
-                                           (ContextType.Domain, Domain, ComputerOU);
+                                           (ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
                 ComputerPrincipal computer = ComputerPrincipal.FindByIdentity
                                  (context, IdentityType.Name, data.name);
 
@@ -168,7 +172,7 @@ namespace ITKostnad.Controllers
             try
             {
                 PrincipalContext context = new PrincipalContext
-                                       (ContextType.Domain, Domain, ComputerOU);
+                                       (ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
                 ComputerPrincipal computer = ComputerPrincipal.FindByIdentity
                                  (context, IdentityType.Name, data.name);
 
@@ -205,7 +209,7 @@ namespace ITKostnad.Controllers
 
 
                 PrincipalContext context = new PrincipalContext
-                                           (ContextType.Domain, Domain, ComputerOU);
+                                           (ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
 
                 ComputerPrincipal swapObject = ComputerPrincipal.FindByIdentity
                                  (context, IdentityType.Name, data.MySwap);
@@ -239,7 +243,7 @@ namespace ITKostnad.Controllers
 
                 }
 
-                context = new PrincipalContext(ContextType.Domain, Domain, ComputerOU);
+                context = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
                 swapObject = ComputerPrincipal.FindByIdentity(context, IdentityType.Name, data.MySwap);
 
                 //Updates the swapcomputer with the input values
