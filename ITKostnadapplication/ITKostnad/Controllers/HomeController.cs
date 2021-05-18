@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ITKostnad.Models;
+using ITKostnad.Net;
+using ITKostnad.Net.OptionEnums;
 
 namespace ITKostnad.Controllers
 {
@@ -33,17 +35,41 @@ namespace ITKostnad.Controllers
 
             Domain = _appSettings.Value.Domain;
             ComputerOU = _appSettings.Value.ComputerOU;
-            UserOU = _appSettings.Value.UserOU;
             ServiceAccount = _appSettings.Value.ServiceAccount;
             ServiceAccountPassword = _appSettings.Value.ServiceAccountPassword;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchString)
         {
             ToPageModel Page = new ToPageModel();
             Page.Computer = GetallComputers();
             Page.User = GetallAdUsers();
+            Page.SelectedComputer = GetComputer(searchString);
+
+            ViewBag.Message = TempData["shortMessage"];
+
+
+
             return View(Page);
+        }
+
+        public IActionResult UpdateComputer([Bind("name,department,location,physicalDeliveryOfficeName,extensionAttribute9,extensionAttribute13,ReplaceString")] UpdateModel data)
+        {
+
+            if (string.IsNullOrEmpty(data.ReplaceString))
+            {
+                SetComputer(data);
+            }
+            else
+            {
+                ReplaceComputer(data);
+            }
+
+
+            return RedirectToAction("Index", new { searchString = data.name });
+
+
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -80,68 +106,84 @@ namespace ITKostnad.Controllers
         }
 
         //if you want to get Groups of Specific OU you have to add OU Name in Context        
-        public static List<UserModel> GetallAdUsers()
+        public List<UserModel> GetallAdUsers()
         {
 
             List<UserModel> AdUsers = new List<UserModel>();
-            //MBS.com My Domain Controller which i created 
-            //OU=DevOU --Organizational Unit which i created 
-            //and create users and groups inside it 
-            var ctx = new PrincipalContext(ContextType.Domain, Domain, UserOU, ServiceAccount, ServiceAccountPassword);
-            UserPrincipal userPrin = new UserPrincipal(ctx);
-            userPrin.Name = "*";
-            var searcher = new System.DirectoryServices.AccountManagement.PrincipalSearcher();
-            searcher.QueryFilter = userPrin;
-            ((DirectorySearcher)searcher.GetUnderlyingSearcher()).PageSize = 500;
-            var results = searcher.FindAll();
-            foreach (UserPrincipal p in results)
+            try
             {
-                AdUsers.Add(new UserModel
+
+            
+                //MBS.com My Domain Controller which i created 
+                //OU=DevOU --Organizational Unit which i created 
+                //and create users and groups inside it 
+                var ctx = new PrincipalContext(ContextType.Domain, Domain, UserOU, ServiceAccount, ServiceAccountPassword);
+                UserPrincipal userPrin = new UserPrincipal(ctx);
+                userPrin.Name = "*";
+                var searcher = new System.DirectoryServices.AccountManagement.PrincipalSearcher();
+                searcher.QueryFilter = userPrin;
+                ((DirectorySearcher)searcher.GetUnderlyingSearcher()).PageSize = 500;
+                var results = searcher.FindAll();
+                foreach (UserPrincipal p in results)
                 {
-                    DisplayName = p.DisplayName,
-                    Samaccountname = p.SamAccountName,
-                    EmailAddress = p.EmailAddress
+                    AdUsers.Add(new UserModel
+                    {
+                        DisplayName = p.DisplayName,
+                        Samaccountname = p.SamAccountName,
+                        EmailAddress = p.EmailAddress
 
 
-                });
+                    });
+                }
+            } 
+            catch (Exception ex)
+            {
+                TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
             }
             return AdUsers;
         }
 
         //if you want to get Groups of Specific OU you have to add OU Name in Context
-        public static List<ComputerModel> GetallComputers()
+        public List<ComputerModel> GetallComputers()
         {
-
             List<ComputerModel> ADComputers = new List<ComputerModel>();
-            var ctx = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
-            ComputerPrincipal compPrin = new ComputerPrincipal(ctx);
-            compPrin.Name = "*";
-            var searcher = new System.DirectoryServices.AccountManagement.PrincipalSearcher();
-            searcher.QueryFilter = compPrin;
-            ((DirectorySearcher)searcher.GetUnderlyingSearcher()).PageSize = 500;
-            var results = searcher.FindAll();
-            foreach (Principal p in results)
+            try
             {
-                ADComputers.Add(new ComputerModel
-                {
-                    name = p.Name,
-                });
-            }
 
+                var ctx = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
+                ComputerPrincipal compPrin = new ComputerPrincipal(ctx);
+                compPrin.Name = "*";
+                var searcher = new System.DirectoryServices.AccountManagement.PrincipalSearcher();
+                searcher.QueryFilter = compPrin;
+                ((DirectorySearcher)searcher.GetUnderlyingSearcher()).PageSize = 500;
+                var results = searcher.FindAll();
+                foreach (Principal p in results)
+                {
+                    ADComputers.Add(new ComputerModel
+                    {
+                        name = p.Name,
+                    });
+                }
+
+                
+            } 
+            catch (Exception ex)
+            {
+                TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
+            }
             return ADComputers;
         }
 
-        [HttpPost]
-        public ActionResult GetComputer([FromBody] ComputerModel data)
+
+        public ComputerModel GetComputer(string name)
         {
+            ComputerModel myComputer = new ComputerModel();
+
             try
             {
-                ComputerModel myComputer = new ComputerModel();
 
-                PrincipalContext context = new PrincipalContext
-                                           (ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
-                ComputerPrincipal computer = ComputerPrincipal.FindByIdentity
-                                 (context, IdentityType.Name, data.name);
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
+                ComputerPrincipal computer = ComputerPrincipal.FindByIdentity(context, IdentityType.Name, name);
 
                 using (DirectoryEntry de = computer.GetUnderlyingObject() as DirectoryEntry)
                 {
@@ -156,19 +198,18 @@ namespace ITKostnad.Controllers
                     myComputer.extensionAttribute9 = de.Properties["extensionAttribute9"].Value as string;
                 }
 
-                return Json(new { result = true, data = myComputer });
+
             }
             catch (Exception ex)
             {
-                return Json(new { result = false, error = ex.Message });
+                TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
+                
             }
-
+            return myComputer;
         }
 
-        [HttpPost]
-        public ActionResult SetComputer([FromBody] ComputerModel data)
+        public void SetComputer(UpdateModel data)
         {
-
             try
             {
                 PrincipalContext context = new PrincipalContext
@@ -189,30 +230,27 @@ namespace ITKostnad.Controllers
 
                 }
 
-                return Json(new { result = true });
+                TempData["shortMessage"] = Notification.Show($"{data.name} update successful", position: Position.BottomCenter, type: ToastType.Success, timeOut: 3000);
+                
             }
             catch (Exception ex)
             {
-                return Json(new { result = false, error = ex.Message });
+                TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
+                
             }
+            return;
+
         }
 
-        [HttpPost]
-        public ActionResult SwapComputer([FromBody] SwapModel data)
+        public void ReplaceComputer(UpdateModel data)
         {
-
+            ComputerModel swapComputer = new ComputerModel();
             try
             {
-                ComputerModel inputComputer = data.MyInput;
 
-                ComputerModel swapComputer = new ComputerModel();
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
 
-
-                PrincipalContext context = new PrincipalContext
-                                           (ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
-
-                ComputerPrincipal swapObject = ComputerPrincipal.FindByIdentity
-                                 (context, IdentityType.Name, data.MySwap);
+                ComputerPrincipal swapObject = ComputerPrincipal.FindByIdentity(context, IdentityType.Name, data.ReplaceString);
 
                 //Retrieve swapcomputer attributes
                 using (DirectoryEntry de = swapObject.GetUnderlyingObject() as DirectoryEntry)
@@ -228,7 +266,7 @@ namespace ITKostnad.Controllers
 
 
                 ComputerPrincipal inputObject = ComputerPrincipal.FindByIdentity
-                                 (context, IdentityType.Name, inputComputer.name);
+                                 (context, IdentityType.Name, data.name);
 
                 //Updates the inputcomputer with the swapcomputer values
                 using (DirectoryEntry de2 = inputObject.GetUnderlyingObject() as DirectoryEntry)
@@ -244,29 +282,31 @@ namespace ITKostnad.Controllers
                 }
 
                 context = new PrincipalContext(ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
-                swapObject = ComputerPrincipal.FindByIdentity(context, IdentityType.Name, data.MySwap);
+                swapObject = ComputerPrincipal.FindByIdentity(context, IdentityType.Name, data.ReplaceString);
 
                 //Updates the swapcomputer with the input values
                 using (DirectoryEntry de3 = swapObject.GetUnderlyingObject() as DirectoryEntry)
                 {
-                    string newDescription = ($"{inputComputer.department}, {inputComputer.location}, {inputComputer.physicalDeliveryOfficeName}, {inputComputer.extensionAttribute9}, {inputComputer.extensionAttribute13}");
+                    string newDescription = ($"{data.department}, {data.location}, {data.physicalDeliveryOfficeName}, {data.extensionAttribute9}, {data.extensionAttribute13}");
 
-                    SetProperty(de3, "Department", inputComputer.department);
-                    SetProperty(de3, "Location", inputComputer.location);
-                    SetProperty(de3, "PhysicalDeliveryOfficeName", inputComputer.physicalDeliveryOfficeName);
-                    SetProperty(de3, "extensionAttribute9", inputComputer.extensionAttribute9);
-                    SetProperty(de3, "extensionAttribute13", inputComputer.extensionAttribute13);
+                    SetProperty(de3, "Department", data.department);
+                    SetProperty(de3, "Location", data.location);
+                    SetProperty(de3, "PhysicalDeliveryOfficeName", data.physicalDeliveryOfficeName);
+                    SetProperty(de3, "extensionAttribute9", data.extensionAttribute9);
+                    SetProperty(de3, "extensionAttribute13", data.extensionAttribute13);
                     SetProperty(de3, "Description", newDescription);
 
                 }
 
-
-                return Json(new { result = true });
+                TempData["shortMessage"] = Notification.Show($"Replacement {data.ReplaceString} successful", position: Position.BottomCenter, type: ToastType.Success, timeOut: 10000);
+                
             }
             catch (Exception ex)
             {
-                return Json(new { result = false, error = ex.Message });
+                TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
+               
             }
+            return;
         }
 
 

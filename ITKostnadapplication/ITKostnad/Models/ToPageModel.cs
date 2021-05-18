@@ -10,5 +10,8 @@ namespace ITKostnad.Models
     {
         public List<ComputerModel> Computer { get; set; }
         public List<UserModel> User { get; set; }
+        public ComputerModel SelectedComputer { get; set; }
+        public string SearchString { get; set; }
+        public string ReplaceString { get; set; }
     }
 }

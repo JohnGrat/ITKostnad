@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": true,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/ITKostnad",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:55286",
       "sslPort": 44303
@@ -13,7 +17,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "ancmHostingModel": "InProcess"
     },
     "ITKostnad": {
       "commandName": "Project",

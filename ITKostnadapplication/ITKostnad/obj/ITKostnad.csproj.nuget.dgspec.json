@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\gitlab\\itkostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj": {}
+    "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\github\\ITKostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\gitlab\\itkostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj": {
+    "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\github\\ITKostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\gitlab\\itkostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj",
+        "projectUniqueName": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\github\\ITKostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj",
         "projectName": "ITKostnad",
-        "projectPath": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\gitlab\\itkostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj",
+        "projectPath": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\github\\ITKostnad\\ITKostnadapplication\\ITKostnad\\ITKostnad.csproj",
         "packagesPath": "C:\\Users\\ze0373\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\gitlab\\itkostnad\\ITKostnadapplication\\ITKostnad\\obj\\",
+        "outputPath": "C:\\Users\\ze0373\\OneDrive - Nordlo\\Program\\github\\ITKostnad\\ITKostnadapplication\\ITKostnad\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ze0373\\AppData\\Roaming\\NuGet\\NuGet.Config",

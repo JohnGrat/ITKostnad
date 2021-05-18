@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\Administrator\Desktop\ITKostnadapplication\ITKostnad\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2021-05-17T12:30:56.1178601Z;True|2021-05-17T14:24:57.7622371+02:00;True|2021-05-17T14:16:25.9037116+02:00;True|2021-05-17T13:52:39.4284652+02:00;True|2021-05-17T13:49:51.8143817+02:00;True|2021-05-13T09:54:54.8414769+02:00;True|2021-05-13T09:39:15.5519688+02:00;True|2021-05-12T22:19:06.4557726+02:00;True|2021-05-12T21:54:14.6178678+02:00;True|2021-05-12T21:43:26.2488719+02:00;True|2021-05-12T21:29:59.1484126+02:00;</History>
+  </PropertyGroup>
+</Project>

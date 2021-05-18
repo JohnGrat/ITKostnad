@@ -40,6 +40,7 @@
     }
 </style>
 
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -48,21 +49,35 @@
 <body>
     <div class="container-contact100">
         <div class="wrap-contact100">
-            <form class="contact100-form validate-form" id="itkostnad">
-                <span class="contact100-form-title">
-                    PARTILLE
-                </span>
 
-                <div class="wrap-input100 validate-input" data-validate="Name is required">
-                    <span class="label-input100">Datornamn</span>
-                    <input class="input100" id="myInput" type="text" name="name" placeholder="ange datornamn" autocomplete="off">
-                    <span class="focus-input100"></span>
-                </div>
+            <span class="contact100-form-title">
+                PARTILLE
+            </span>
+
+            <form asp-controller="Home" asp-action="Index" id="search" method="get">
+                <p>
+
+                    <div class="wrap-input100 validate-input" data-validate="Name is required">
+                        <span class="label-input100">Datornamn</span>
+                        <input class="input100" asp-for="SearchString" type="text" id="input" placeholder="ange datornamn" autocomplete="off">
+                        <span class="focus-input100"></span>
+                    </div>
+                </p>
+            </form>
+
+
+
+            <form asp-controller="Home" asp-action="UpdateComputer" id="update" method="post">
+
+
+                <input class="input100" asp-for="SelectedComputer.name" type="hidden" name="name">
+
+
 
                 <div class="wrap-input100 input100-select">
                     <span class="label-input100">Förvaltning</span>
                     <div>
-                        <select class="selection-2" name="department" id="department">
+                        <select class="selection-2" asp-for="SelectedComputer.department" name="department">
                             <option></option>
                             <option>UF</option>
                             <option>KoF</option>
@@ -80,26 +95,26 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Plats</span>
-                    <input class="input100" type="text" name="location" placeholder="" id="location">
+                    <input class="input100" asp-for="SelectedComputer.location" type="text" name="location" placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Placering</span>
-                    <input class="input100" type="text" name="physicalDeliveryOfficeName" placeholder="" id="physicalDeliveryOfficeName">
+                    <input class="input100" asp-for="SelectedComputer.physicalDeliveryOfficeName" type="text" name="physicalDeliveryOfficeName" placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Ansvarig</span>
-                    <input class="input100" type="text" name="extensionAttribute9" placeholder="" id="extensionAttribute9" autocomplete="off">
+                    <input class="input100" asp-for="SelectedComputer.extensionAttribute9" type="text" name="extensionAttribute9" id="extensionAttribute9" placeholder="" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 input100-select">
                     <span class="label-input100">Personlig/Delad</span>
                     <div>
-                        <select class="selection-2" name="extensionAttribute13" id="extensionAttribute13">
+                        <select class="selection-2" asp-for="SelectedComputer.extensionAttribute13" name="extensionAttribute13">
                             <option></option>
                             <option>Personlig</option>
                             <option>Delad</option>
@@ -110,22 +125,24 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
                     <span class="label-input100">Ersätt</span>
-                    <input class="input100" id="mySwap" type="text" name="mySwap" placeholder="ange datornamn" autocomplete="off">
+                    <input class="input100" asp-for="ReplaceString" type="text" name="ReplaceString" id="replace" placeholder="ange datornamn" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
                 <div id="dropDownSelect1"></div>
+
                 <div class="container-contact100-form-btn">
                     <div class="wrap-contact100-form-btn">
                         <div class="contact100-form-bgbtn"></div>
-                        <button button type="button" class="contact100-form-btn disable" id="save" name="save">
+                        <button class="contact100-form-btn" id="submit">
                             <span>
                                 Spara
+                                <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
                             </span>
                         </button>
                     </div>
                 </div>
-
             </form>
+
 
         </div>
     </div>
@@ -155,182 +172,59 @@
 <!--===============================================================================================-->
 <script src="~/js/main.js"></script>
 
+<script src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 
+
+@Html.Raw(ViewBag.Message)
 
 <script>
     var json = JSON.parse('@Html.Raw(Json.Serialize(Model))');
+    var computers = json.computer.map(x => x.name);
+    var users = json.user.filter(x => x.displayName);
 
-    var computer = json.computer;
-    var users = json.user;
-    var computerNames = json.computer.map(x => x.name);
+    var button = document.getElementById("submit")
+    var select = document.getElementById("SelectedComputer_name").value
 
+    if (select == "") {
+        $('#submit').addClass("disable");
+        button.disabled = true;
+    }
 
-    autocompleteComputer(document.getElementById("myInput"), computerNames, 5);
-    autocompleteComputer(document.getElementById("mySwap"), computerNames, 3)
+    autocompleteComputer(document.getElementById("input"), computers, 5);
+    autocompleteComputer(document.getElementById("replace"), computers, 3)
     autocompleteUser(document.getElementById("extensionAttribute9"), users, 5)
 
+     $('#input').on('focusout', function () {
 
-    $('#myInput').on('focusout', function () {
+         if (computers.includes(this.value)) {
 
-        if (computerNames.includes(this.value)) {
-
-            var result = {
-                "name": this.value
-            }
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetComputer", "Home")',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(result),
-                dataType: "json",
-                success: function (response) {
-
-                    if (response.result == true) {
-                        Object.keys(response.data).forEach(element => {
-                            if (element != "mySwap") {
-                                $("#" + element).val(response.data[element]);
-                                $("#" + element).trigger('change');
-                            }
-                        })
-                    } else {
-                        alert(response.error);
-                    }
-
-
-                    return
-
-                }
-            });
+            document.getElementById("search").submit();
         }
     });
 
-    $('#myInput').on('focusout', function () {
 
-        var mySwap = document.getElementById("mySwap").value;
+    $('#replace').on('focusout', function () {
 
-        if (mySwap != "") {
-            $('#save span').text('Ersätt&spara')
+        if (this.value == "") {
+            $('#submit span').text('Spara')
         } else {
-            $('#save span').text('Spara')
+            $('#submit span').text('Ersätt&spara')
         }
 
-        if (computerNames.includes(this.value) && computerNames.includes(mySwap)) {
-            $('#save').removeClass("disable");
-            $('#save span').append('<i class="fa fa-long-arrow-right m-l-7"</i>')
-        } else if (computerNames.includes(this.value) && (mySwap == "")) {
-            $('#save').removeClass("disable");
-            $('#save span').append('<i class="fa fa-long-arrow-right m-l-7"</i>')
+        if (computers.includes(this.value) || this.value == "") {
+            button.disabled = false;
+            $('#submit').removeClass("disable");
+            $('#submit span').append('<i class="fa fa-long-arrow-right m-l-7"</i>')
         } else {
-            $('#save').addClass("disable");
+            $('#submit').addClass("disable");
+            button.disabled = true;
         }
-
-        if (!computerNames.includes(this.value)) {
-            $('#location').val("");
-            $('#physicalDeliveryOfficeName').val("");
-            $('#extensionAttribute9').val("");
-            $("#department").val("");
-            $("#extensionAttribute13").val("");
-            $("#department").trigger('change');
-            $("#extensionAttribute13").trigger('change');
-            $('#save').addClass("disable");
-        }
-
     });
 
-    $('#mySwap').on('focusout', function () {
-
-        var myInput = document.getElementById("myInput").value;
-
-        if (this.value != "") {
-            $('#save span').text('Ersätt&spara')
-        } else {
-            $('#save span').text('Spara')
-        }
-
-        if (computerNames.includes(this.value) && computerNames.includes(myInput)) {
-            $('#save').removeClass("disable");
-            $('#save span').append('<i class="fa fa-long-arrow-right m-l-7"</i>')
-        } else if (computerNames.includes(myInput) && (this.value == "")) {
-            $('#save').removeClass("disable");
-            $('#save span').append('<i class="fa fa-long-arrow-right m-l-7"</i>')
-        } else {
-            $('#save').addClass("disable");
-        }
-
-    });
-
-
-    $('#save').click(function () {
-
-        var myInput = document.getElementById("myInput").value;
-        var mySwap = document.getElementById("mySwap").value;
-
-        if (computerNames.includes(myInput) && computerNames.includes(mySwap)) {
-            var computerModel = {};
-            var result = {};
-            $("#itkostnad").serializeArray().map(function (item) {
-                if (computerModel[item.name]) {
-                    if (typeof (ComputerModel[item.name]) === "string") {
-                        computerModel[item.name] = [config[item.name]];
-                    }
-                    computerModel[item.name].push(item.value);
-                } else {
-                    computerModel[item.name] = item.value;
-                }
-            });
-            result["MyInput"] = computerModel;
-            result["MySwap"] = mySwap;
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("SwapComputer", "Home")',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(result),
-                dataType: "json",
-                success: function (response) {
-
-                    if (response.result == true) {
-                        $("#myInput").trigger("focusout")
-                        alert("success")
-                    } else {
-                        alert(response.error);
-                    }
-
-                }
-            });
-        } else if (computerNames.includes(myInput) && mySwap == "") {
-            var result = {};
-            $("#itkostnad").serializeArray().map(function (item) {
-                if (result[item.name]) {
-                    if (typeof (result[item.name]) === "string") {
-                        result[item.name] = [config[item.name]];
-                    }
-                    result[item.name].push(item.value);
-                } else {
-                    result[item.name] = item.value;
-                }
-            });
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("SetComputer", "Home")',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(result),
-                dataType: "json",
-                success: function (response) {
-                    if (response.result == true) {
-                        alert("success")
-                    } else {
-                        alert(response.error);
-                    }
-                }
-            });
-        }
-
-
-    });
 
 </script>
-
 
 
 
