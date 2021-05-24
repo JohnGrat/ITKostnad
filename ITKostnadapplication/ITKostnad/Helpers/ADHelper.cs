@@ -53,7 +53,7 @@ namespace ITKostnad.Helpers
             }
             catch (Exception ex)
             {
-                //TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
+                Console.WriteLine(ex.Message);
             }
             return ADComputers;
         }
@@ -96,7 +96,7 @@ namespace ITKostnad.Helpers
             }
             catch (Exception ex)
             {
-                //TempData["shortMessage"] = Notification.Show(ex.Message, position: Position.BottomCenter, type: ToastType.Error, timeOut: 7000);
+                Console.WriteLine(ex.Message);
             }
             return AdUsers;
         }
