@@ -60,12 +60,12 @@
             <form asp-controller="Home" asp-action="Index" id="search" method="get">
                 <p>
 
-                <div class="wrap-input100 validate-input" data-validate="Name is required">
-                    <span class="label-input100">Datornamn</span>
-                    <input class="input100" asp-for="SearchString" type="text" id="input" placeholder="ange datornamn"
-                        autocomplete="off">
-                    <span class="focus-input100"></span>
-                </div>
+                    <div class="wrap-input100 validate-input" data-validate="Name is required">
+                        <span class="label-input100">Datornamn</span>
+                        <input class="input100" asp-for="SearchString" type="text" id="input" placeholder="ange datornamn"
+                               autocomplete="off">
+                        <span class="focus-input100"></span>
+                    </div>
                 </p>
             </form>
 
@@ -95,21 +95,21 @@
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Plats</span>
                     <input class="input100" asp-for="SelectedComputer.location" type="text" name="location"
-                        placeholder="">
+                           placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Placering</span>
                     <input class="input100" asp-for="SelectedComputer.physicalDeliveryOfficeName" type="text"
-                        name="physicalDeliveryOfficeName" placeholder="">
+                           name="physicalDeliveryOfficeName" placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Ansvarig</span>
                     <input class="input100" asp-for="SelectedComputer.extensionAttribute9" type="text"
-                        name="extensionAttribute9" id="extensionAttribute9" placeholder="" autocomplete="off">
+                           name="extensionAttribute9" id="extensionAttribute9" placeholder="" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
 
@@ -117,7 +117,7 @@
                     <span class="label-input100">Personlig/Delad</span>
                     <div>
                         <select class="selection-2" asp-for="SelectedComputer.extensionAttribute13"
-                            name="extensionAttribute13">
+                                name="extensionAttribute13">
                             <option></option>
                             <option>Personlig</option>
                             <option>Delad</option>
@@ -129,7 +129,7 @@
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
                     <span class="label-input100">Ersätt</span>
                     <input class="input100" asp-for="ReplaceString" type="text" name="ReplaceString" id="replace"
-                        placeholder="ange datornamn" autocomplete="off">
+                           placeholder="ange datornamn" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
                 <div id="dropDownSelect1"></div>
@@ -184,9 +184,10 @@
 @Html.Raw(ViewBag.Message)
 
 <script>
-    var json = JSON.parse('@Html.Raw(Json.Serialize(Model))');
-    var computers = json.computer.map(x => x.name);
-    var users = json.user.filter(x => x.displayName);
+
+
+    var computers = (@Html.Raw(Json.Serialize(ViewBag.Computers))).map(x => x.name);
+    var users = (@Html.Raw(Json.Serialize(ViewBag.Users))).filter(x => x.displayName);
 
     var button = document.getElementById("submit")
     var select = document.getElementById("SelectedComputer_name").value

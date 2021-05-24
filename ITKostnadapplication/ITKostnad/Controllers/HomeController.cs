@@ -38,15 +38,13 @@ namespace ITKostnad.Controllers
             Users = (List<UserModel>)_cache.Get("Users");
             Computers = (List<ComputerModel>)_cache.Get("Computers");
 
+
         }
 
 
         public IActionResult Index(string searchString)
         {
             ToPageModel Page = new ToPageModel();
-            Page.Computer = Computers;
-            Page.User = Users;
-
             if (!string.IsNullOrEmpty(searchString))
             {
                 NotificationModel notification = new NotificationModel();
@@ -65,7 +63,8 @@ namespace ITKostnad.Controllers
 
 
             }
-
+            ViewBag.Computers = Computers;
+            ViewBag.Users = Users;
             ViewBag.Message = TempData["shortMessage"];
 
             return View(Page);
