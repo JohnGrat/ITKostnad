@@ -1,48 +1,48 @@
  .disable {
-        background: -webkit-linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
-        background: -o-linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
-        background: -moz-linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
-        background: linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
-    }
+     background: -webkit-linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
+     background: -o-linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
+     background: -moz-linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
+     background: linear-gradient(right, #E6E6E6, #E6E6E6, #E6E6E6, #E6E6E6);
+ }
 
-    .autocomplete-items {
-        position: absolute;
-        white-space: nowrap;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        border: 1px solid #d4d4d4;
-        border-bottom: none;
-        border-top: none;
-        z-index: 99;
-        /*position the autocomplete items to be the same width as the container:*/
-        top: 100%;
-        left: 0;
-        right: 0;
-        font-family: Poppins-Regular;
-        font-size: 15px;
-        color: #333333;
-        line-height: 1.2;
-    }
+ .autocomplete-items {
+     position: absolute;
+     white-space: nowrap;
+     overflow-y: hidden;
+     overflow-x: hidden;
+     border: 1px solid #d4d4d4;
+     border-bottom: none;
+     border-top: none;
+     z-index: 99;
+     /*position the autocomplete items to be the same width as the container:*/
+     top: 100%;
+     left: 0;
+     right: 0;
+     font-family: Poppins-Regular;
+     font-size: 15px;
+     color: #333333;
+     line-height: 1.2;
+ }
 
-        .autocomplete-items div {
-            padding: 10px;
-            cursor: pointer;
-            background-color: #fff;
-            border-bottom: 1px solid #d4d4d4;
-        }
+ .autocomplete-items div {
+     padding: 10px;
+     cursor: pointer;
+     background-color: #fff;
+     border-bottom: 1px solid #d4d4d4;
+ }
 
-            .autocomplete-items div:hover {
-                /*when hovering an item:*/
-                background: #a64bf4;
-                background: -webkit-linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
-                background: -o-linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
-                background: -moz-linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
-                background: linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
-                color: white;
-            }
+ .autocomplete-items div:hover {
+     /*when hovering an item:*/
+     background: #a64bf4;
+     background: -webkit-linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
+     background: -o-linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
+     background: -moz-linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
+     background: linear-gradient(right, #99B8D7, #004D95, #99B8D7, #004D95);
+     color: white;
+ }
 
-    .autocomplete-active {
-        /*when navigating through the items using the arrow keys:*/
-        background-color: DodgerBlue !important;
-        color: #ffffff;
-    }
+ .autocomplete-active {
+     /*when navigating through the items using the arrow keys:*/
+     background-color: DodgerBlue !important;
+     color: #ffffff;
+ }

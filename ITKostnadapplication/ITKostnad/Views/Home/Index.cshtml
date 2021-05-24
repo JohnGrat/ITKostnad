@@ -1,5 +1,4 @@
-﻿
-@model ITKostnad.Models.ToPageModel
+﻿@model ITKostnad.Models.ToPageModel
 @{
     Layout = null;
 }
@@ -28,11 +27,13 @@
 <link rel="stylesheet" type="text/css" href="~/css/misc.css">
 
 <style>
-     .container-contact100 {
+    .container-contact100 {
         background-image: url('@Url.Content("~/images/bg-01.jpg")');
-        background-size: cover; /* <------ */
+        background-size: cover;
+        /* <------ */
         background-repeat: no-repeat;
-        background-position: center center; /* optional, center the image */
+        background-position: center center;
+        /* optional, center the image */
     }
 
     .contact100-form-title {
@@ -42,10 +43,12 @@
 
 
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>ITKostnad</title>
 </head>
+
 <body>
     <div class="container-contact100">
         <div class="wrap-contact100">
@@ -57,22 +60,18 @@
             <form asp-controller="Home" asp-action="Index" id="search" method="get">
                 <p>
 
-                    <div class="wrap-input100 validate-input" data-validate="Name is required">
-                        <span class="label-input100">Datornamn</span>
-                        <input class="input100" asp-for="SearchString" type="text" id="input" placeholder="ange datornamn" autocomplete="off">
-                        <span class="focus-input100"></span>
-                    </div>
+                <div class="wrap-input100 validate-input" data-validate="Name is required">
+                    <span class="label-input100">Datornamn</span>
+                    <input class="input100" asp-for="SearchString" type="text" id="input" placeholder="ange datornamn"
+                        autocomplete="off">
+                    <span class="focus-input100"></span>
+                </div>
                 </p>
             </form>
 
-
-
             <form asp-controller="Home" asp-action="UpdateComputer" id="update" method="post">
 
-
                 <input class="input100" asp-for="SelectedComputer.name" type="hidden" name="name">
-
-
 
                 <div class="wrap-input100 input100-select">
                     <span class="label-input100">Förvaltning</span>
@@ -95,26 +94,30 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Plats</span>
-                    <input class="input100" asp-for="SelectedComputer.location" type="text" name="location" placeholder="">
+                    <input class="input100" asp-for="SelectedComputer.location" type="text" name="location"
+                        placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Placering</span>
-                    <input class="input100" asp-for="SelectedComputer.physicalDeliveryOfficeName" type="text" name="physicalDeliveryOfficeName" placeholder="">
+                    <input class="input100" asp-for="SelectedComputer.physicalDeliveryOfficeName" type="text"
+                        name="physicalDeliveryOfficeName" placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Ansvarig</span>
-                    <input class="input100" asp-for="SelectedComputer.extensionAttribute9" type="text" name="extensionAttribute9" id="extensionAttribute9" placeholder="" autocomplete="off">
+                    <input class="input100" asp-for="SelectedComputer.extensionAttribute9" type="text"
+                        name="extensionAttribute9" id="extensionAttribute9" placeholder="" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 input100-select">
                     <span class="label-input100">Personlig/Delad</span>
                     <div>
-                        <select class="selection-2" asp-for="SelectedComputer.extensionAttribute13" name="extensionAttribute13">
+                        <select class="selection-2" asp-for="SelectedComputer.extensionAttribute13"
+                            name="extensionAttribute13">
                             <option></option>
                             <option>Personlig</option>
                             <option>Delad</option>
@@ -125,7 +128,8 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
                     <span class="label-input100">Ersätt</span>
-                    <input class="input100" asp-for="ReplaceString" type="text" name="ReplaceString" id="replace" placeholder="ange datornamn" autocomplete="off">
+                    <input class="input100" asp-for="ReplaceString" type="text" name="ReplaceString" id="replace"
+                        placeholder="ange datornamn" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
                 <div id="dropDownSelect1"></div>
@@ -147,6 +151,7 @@
     </div>
 
 </body>
+
 </html>
 
 
@@ -196,9 +201,9 @@
     autocompleteComputer(document.getElementById("replace"), computers, 3)
     autocompleteUser(document.getElementById("extensionAttribute9"), users, 5)
 
-     $('#input').on('focusout', function () {
+    $('#input').on('focusout', function () {
 
-         if (computers.includes(this.value)) {
+        if (computers.includes(this.value)) {
 
             document.getElementById("search").submit();
         }
@@ -225,6 +230,3 @@
 
 
 </script>
-
-
-
