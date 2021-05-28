@@ -2,30 +2,61 @@
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using ITKostnad.Models;
-using ITKostnad.Net;
-using ITKostnad.Net.OptionEnums;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ITKostnad.Helpers
 {
     public class ADHelper
     {
 
-
         public static string Domain { get; set; }
-        //Description
         public static string ComputerOU { get; set; }
-        //Description
         public static string UserOU { get; set; }
-        //Förvaltning
         public static string ServiceAccount { get; set; }
-        //Plats
         public static string ServiceAccountPassword { get; set; }
+        public static IMemoryCache Cache { get; set; }
+
+        private static List<ComputerModel> ADComputers;
+        private static List<UserModel> ADUsers;
+        private static Thread ServiceThread { get; set; }
+
+        public static void start()
+        {
+            ADComputers = GetallComputers();
+            ADUsers = GetallAdUsers();
+
+            MemoryCacheEntryOptions entryOptions = new MemoryCacheEntryOptions();
+            Cache.Set("Computers", ADComputers, entryOptions);
+            Cache.Set("Users", ADUsers, entryOptions);
+
+
+            ServiceThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(TimeSpan.FromHours(12));
+                    try
+                    {
+                        ADComputers = GetallComputers();
+                        ADUsers = GetallAdUsers();
+                        Cache.Set("Computers", ADComputers, entryOptions);
+                        Cache.Set("Users", ADUsers, entryOptions);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+
+                }
+            });
+            ServiceThread.Start();
+        }
 
         //if you want to get Groups of Specific OU you have to add OU Name in Context
-        public static List<ComputerModel> GetallComputers()
+        private static List<ComputerModel> GetallComputers()
         {
             List<ComputerModel> ADComputers = new List<ComputerModel>();
             try
@@ -42,7 +73,7 @@ namespace ITKostnad.Helpers
                 {
                     ADComputers.Add(new ComputerModel
                     {
-                        name = p.Name,
+                        Name = p.Name,
                     });
                 }
                 ctx.Dispose();
@@ -60,14 +91,12 @@ namespace ITKostnad.Helpers
 
 
         //if you want to get Groups of Specific OU you have to add OU Name in Context        
-        public static List<UserModel> GetallAdUsers()
+        private static List<UserModel> GetallAdUsers()
         {
 
             List<UserModel> AdUsers = new List<UserModel>();
             try
             {
-
-
                 //MBS.com My Domain Controller which i created 
                 //OU=DevOU --Organizational Unit which i created 
                 //and create users and groups inside it 
@@ -102,7 +131,7 @@ namespace ITKostnad.Helpers
         }
 
 
-        public static void SetProperty(DirectoryEntry oDE, string sPropertyName, string sPropertyValue)
+        private static void SetProperty(DirectoryEntry oDE, string sPropertyName, string sPropertyValue)
         {
             //check if the value is valid, otherwise dont update
             if (sPropertyValue != string.Empty)
@@ -129,10 +158,6 @@ namespace ITKostnad.Helpers
             }
         }
 
-
-
-
-
         public static ComputerModel GetComputer(string name)
         {
             ComputerModel myComputer = new ComputerModel();
@@ -146,13 +171,13 @@ namespace ITKostnad.Helpers
                 {
 
                     // Go for those attributes and do what you need to do...
-                    myComputer.name = de.Properties["Name"].Value as string;
-                    myComputer.description = de.Properties["Description"].Value as string;
-                    myComputer.department = de.Properties["Department"].Value as string;
-                    myComputer.location = de.Properties["Location"].Value as string;
-                    myComputer.physicalDeliveryOfficeName = de.Properties["PhysicalDeliveryOfficeName"].Value as string;
-                    myComputer.extensionAttribute13 = de.Properties["extensionAttribute13"].Value as string;
-                    myComputer.extensionAttribute9 = de.Properties["extensionAttribute9"].Value as string;
+                    myComputer.Name = de.Properties["Name"].Value as string;
+                    myComputer.Description = de.Properties["Description"].Value as string;
+                    myComputer.Department = de.Properties["Department"].Value as string;
+                    myComputer.Location = de.Properties["Location"].Value as string;
+                    myComputer.PhysicalDeliveryOfficeName = de.Properties["PhysicalDeliveryOfficeName"].Value as string;
+                    myComputer.ExtensionAttribute13 = de.Properties["ExtensionAttribute13"].Value as string;
+                    myComputer.ExtensionAttribute9 = de.Properties["ExtensionAttribute9"].Value as string;
 
                     de.Dispose();
                 }
@@ -171,22 +196,21 @@ namespace ITKostnad.Helpers
 
             PrincipalContext context = new PrincipalContext
                                        (ContextType.Domain, Domain, ComputerOU, ServiceAccount, ServiceAccountPassword);
-
             try
             {
 
                 ComputerPrincipal computer = ComputerPrincipal.FindByIdentity
-                                 (context, IdentityType.Name, data.name);
+                                 (context, IdentityType.Name, data.Name);
 
                 using (DirectoryEntry de = computer.GetUnderlyingObject() as DirectoryEntry)
                 {
-                    string newDescription = ($"{data.department}, {data.location}, {data.physicalDeliveryOfficeName}, {data.extensionAttribute9}, {data.extensionAttribute13}");
+                    string newDescription = ($"{data.Department}, {data.Location}, {data.PhysicalDeliveryOfficeName}, {data.ExtensionAttribute9}, {data.ExtensionAttribute13}");
 
-                    SetProperty(de, "Department", data.department);
-                    SetProperty(de, "Location", data.location);
-                    SetProperty(de, "PhysicalDeliveryOfficeName", data.physicalDeliveryOfficeName);
-                    SetProperty(de, "extensionAttribute9", data.extensionAttribute9);
-                    SetProperty(de, "extensionAttribute13", data.extensionAttribute13);
+                    SetProperty(de, "Department", data.Department);
+                    SetProperty(de, "Location", data.Location);
+                    SetProperty(de, "PhysicalDeliveryOfficeName", data.PhysicalDeliveryOfficeName);
+                    SetProperty(de, "ExtensionAttribute9", data.ExtensionAttribute9);
+                    SetProperty(de, "ExtensionAttribute13", data.ExtensionAttribute13);
                     SetProperty(de, "Description", newDescription);
 
                 }
@@ -196,9 +220,7 @@ namespace ITKostnad.Helpers
             {
                 context.Dispose();
             }
-
             return;
-
         }
 
         public static void ReplaceComputer(UpdateModel data)
@@ -208,36 +230,34 @@ namespace ITKostnad.Helpers
             try
             {
 
-
-
                 ComputerPrincipal swapObject = ComputerPrincipal.FindByIdentity(context, IdentityType.Name, data.ReplaceString);
 
                 //Retrieve swapcomputer attributes
                 using (DirectoryEntry de = swapObject.GetUnderlyingObject() as DirectoryEntry)
                 {
-                    swapComputer.name = de.Properties["Name"].Value as string;
-                    swapComputer.description = de.Properties["Description"].Value as string;
-                    swapComputer.department = de.Properties["Department"].Value as string;
-                    swapComputer.location = de.Properties["Location"].Value as string;
-                    swapComputer.physicalDeliveryOfficeName = de.Properties["PhysicalDeliveryOfficeName"].Value as string;
-                    swapComputer.extensionAttribute13 = de.Properties["extensionAttribute13"].Value as string;
-                    swapComputer.extensionAttribute9 = de.Properties["extensionAttribute9"].Value as string;
+                    swapComputer.Name = de.Properties["Name"].Value as string;
+                    swapComputer.Description = de.Properties["Description"].Value as string;
+                    swapComputer.Department = de.Properties["Department"].Value as string;
+                    swapComputer.Location = de.Properties["Location"].Value as string;
+                    swapComputer.PhysicalDeliveryOfficeName = de.Properties["PhysicalDeliveryOfficeName"].Value as string;
+                    swapComputer.ExtensionAttribute13 = de.Properties["ExtensionAttribute13"].Value as string;
+                    swapComputer.ExtensionAttribute9 = de.Properties["ExtensionAttribute9"].Value as string;
                 }
 
 
                 ComputerPrincipal inputObject = ComputerPrincipal.FindByIdentity
-                                 (context, IdentityType.Name, data.name);
+                                 (context, IdentityType.Name, data.Name);
 
                 //Updates the inputcomputer with the swapcomputer values
                 using (DirectoryEntry de2 = inputObject.GetUnderlyingObject() as DirectoryEntry)
                 {
 
-                    SetProperty(de2, "Department", swapComputer.department);
-                    SetProperty(de2, "Location", swapComputer.location);
-                    SetProperty(de2, "PhysicalDeliveryOfficeName", swapComputer.physicalDeliveryOfficeName);
-                    SetProperty(de2, "extensionAttribute9", swapComputer.extensionAttribute9);
-                    SetProperty(de2, "extensionAttribute13", swapComputer.extensionAttribute13);
-                    SetProperty(de2, "Description", swapComputer.description);
+                    SetProperty(de2, "Department", swapComputer.Department);
+                    SetProperty(de2, "Location", swapComputer.Location);
+                    SetProperty(de2, "PhysicalDeliveryOfficeName", swapComputer.PhysicalDeliveryOfficeName);
+                    SetProperty(de2, "ExtensionAttribute9", swapComputer.ExtensionAttribute9);
+                    SetProperty(de2, "ExtensionAttribute13", swapComputer.ExtensionAttribute13);
+                    SetProperty(de2, "Description", swapComputer.Description);
 
                 }
 
@@ -247,21 +267,18 @@ namespace ITKostnad.Helpers
                 //Updates the swapcomputer with the input values
                 using (DirectoryEntry de3 = swapObject.GetUnderlyingObject() as DirectoryEntry)
                 {
-                    string newDescription = ($"{data.department}, {data.location}, {data.physicalDeliveryOfficeName}, {data.extensionAttribute9}, {data.extensionAttribute13}");
+                    string newDescription = ($"{data.Department}, {data.Location}, {data.PhysicalDeliveryOfficeName}, {data.ExtensionAttribute9}, {data.ExtensionAttribute13}");
 
-                    SetProperty(de3, "Department", data.department);
-                    SetProperty(de3, "Location", data.location);
-                    SetProperty(de3, "PhysicalDeliveryOfficeName", data.physicalDeliveryOfficeName);
-                    SetProperty(de3, "extensionAttribute9", data.extensionAttribute9);
-                    SetProperty(de3, "extensionAttribute13", data.extensionAttribute13);
+                    SetProperty(de3, "Department", data.Department);
+                    SetProperty(de3, "Location", data.Location);
+                    SetProperty(de3, "PhysicalDeliveryOfficeName", data.PhysicalDeliveryOfficeName);
+                    SetProperty(de3, "ExtensionAttribute9", data.ExtensionAttribute9);
+                    SetProperty(de3, "ExtensionAttribute13", data.ExtensionAttribute13);
                     SetProperty(de3, "Description", newDescription);
 
                 }
-
                 swapObject.Dispose();
                 inputObject.Dispose();
-
-
             }
             finally
             {
@@ -269,10 +286,5 @@ namespace ITKostnad.Helpers
             }
             return;
         }
-
-
     }
-
-
-
 }

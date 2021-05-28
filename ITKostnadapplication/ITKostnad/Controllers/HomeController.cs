@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.AccountManagement;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using ITKostnad.Models;
 using ITKostnad.Net;
 using ITKostnad.Net.OptionEnums;
-using System.Security.Cryptography;
-using System.Threading;
 using Microsoft.Extensions.Caching.Memory;
 using ITKostnad.Helpers;
 
@@ -23,22 +16,17 @@ namespace ITKostnad.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
         private readonly IMemoryCache _cache;
-
         private static List<UserModel> Users;
         private static List<ComputerModel> Computers;
 
         public HomeController(ILogger<HomeController> logger, IMemoryCache cache)
         {
-
             _logger = logger;
             _cache = cache;
-
+            
             Users = (List<UserModel>)_cache.Get("Users");
             Computers = (List<ComputerModel>)_cache.Get("Computers");
-
-
         }
 
 
@@ -54,11 +42,11 @@ namespace ITKostnad.Controllers
                 }
                 catch (Exception ex)
                 {
-                    notification.message = ex.Message;
-                    notification.timeOut = 10000;
-                    notification.toastType = ToastType.Error;
-                    notification.position = Position.BottomCenter;
-                    TempData["shortMessage"] = Notification.Show(notification.message, position: notification.position, type: notification.toastType, timeOut: notification.timeOut);
+                    notification.Message = ex.Message;
+                    notification.TimeOut = 10000;
+                    notification.ToastType = ToastType.Error;
+                    notification.Position = Position.BottomCenter;
+                    TempData["shortMessage"] = Notification.Show(notification.Message, position: notification.Position, type: notification.ToastType, timeOut: notification.TimeOut);
                 }
 
 
@@ -70,7 +58,7 @@ namespace ITKostnad.Controllers
             return View(Page);
         }
 
-        public IActionResult UpdateComputer([Bind("name,department,location,physicalDeliveryOfficeName,extensionAttribute9,extensionAttribute13,ReplaceString")] UpdateModel data)
+        public IActionResult UpdateComputer([Bind("Name,Department,Location,PhysicalDeliveryOfficeName,ExtensionAttribute9,ExtensionAttribute13,ReplaceString")] UpdateModel data)
         {
             NotificationModel notification = new NotificationModel();
 
@@ -79,17 +67,17 @@ namespace ITKostnad.Controllers
                 try
                 {
                     ADHelper.SetComputer(data);
-                    notification.message = $"Update {data.name} successful";
-                    notification.timeOut = 3000;
-                    notification.toastType = ToastType.Success;
-                    notification.position = Position.BottomCenter;
+                    notification.Message = $"Update {data.Name} successful";
+                    notification.TimeOut = 3000;
+                    notification.ToastType = ToastType.Success;
+                    notification.Position = Position.BottomCenter;
                 }
                 catch (Exception ex)
                 {
-                    notification.message = ex.Message;
-                    notification.timeOut = 10000;
-                    notification.toastType = ToastType.Error;
-                    notification.position = Position.BottomCenter;
+                    notification.Message = ex.Message;
+                    notification.TimeOut = 10000;
+                    notification.ToastType = ToastType.Error;
+                    notification.Position = Position.BottomCenter;
                 }
 
             }
@@ -98,23 +86,23 @@ namespace ITKostnad.Controllers
                 try
                 {
                     ADHelper.ReplaceComputer(data);
-                    notification.message = $"Replacement {data.name} successful";
-                    notification.timeOut = 3000;
-                    notification.toastType = ToastType.Success;
-                    notification.position = Position.BottomCenter;
+                    notification.Message = $"Replacement {data.Name} successful";
+                    notification.TimeOut = 3000;
+                    notification.ToastType = ToastType.Success;
+                    notification.Position = Position.BottomCenter;
                 }
                 catch (Exception ex)
                 {
-                    notification.message = ex.Message;
-                    notification.timeOut = 10000;
-                    notification.toastType = ToastType.Error;
-                    notification.position = Position.BottomCenter;
+                    notification.Message = ex.Message;
+                    notification.TimeOut = 10000;
+                    notification.ToastType = ToastType.Error;
+                    notification.Position = Position.BottomCenter;
                 }
             }
 
-            TempData["shortMessage"] = Notification.Show(notification.message, position: notification.position, type: notification.toastType, timeOut: notification.timeOut);
+            TempData["shortMessage"] = Notification.Show(notification.Message, position: notification.Position, type: notification.ToastType, timeOut: notification.TimeOut);
 
-            return RedirectToAction("Index", new { searchString = data.name });
+            return RedirectToAction("Index", new { searchString = data.Name });
 
         }
 

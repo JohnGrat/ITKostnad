@@ -71,12 +71,12 @@
 
             <form asp-controller="Home" asp-action="UpdateComputer" id="update" method="post">
 
-                <input class="input100" asp-for="SelectedComputer.name" type="hidden" name="name">
+                <input class="input100" asp-for="SelectedComputer.Name" type="hidden" name="name">
 
                 <div class="wrap-input100 input100-select">
                     <span class="label-input100">Förvaltning</span>
                     <div>
-                        <select class="selection-2" asp-for="SelectedComputer.department" name="department">
+                        <select class="selection-2" asp-for="SelectedComputer.Department" name="department">
                             <option></option>
                             <option>UF</option>
                             <option>KoF</option>
@@ -94,21 +94,21 @@
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Plats</span>
-                    <input class="input100" asp-for="SelectedComputer.location" type="text" name="location"
+                    <input class="input100" asp-for="SelectedComputer.Location" type="text" name="location"
                            placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Placering</span>
-                    <input class="input100" asp-for="SelectedComputer.physicalDeliveryOfficeName" type="text"
+                    <input class="input100" asp-for="SelectedComputer.PhysicalDeliveryOfficeName" type="text"
                            name="physicalDeliveryOfficeName" placeholder="">
                     <span class="focus-input100"></span>
                 </div>
 
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
                     <span class="label-input100">Ansvarig</span>
-                    <input class="input100" asp-for="SelectedComputer.extensionAttribute9" type="text"
+                    <input class="input100" asp-for="SelectedComputer.ExtensionAttribute9" type="text"
                            name="extensionAttribute9" id="extensionAttribute9" placeholder="" autocomplete="off">
                     <span class="focus-input100"></span>
                 </div>
@@ -116,7 +116,7 @@
                 <div class="wrap-input100 input100-select">
                     <span class="label-input100">Personlig/Delad</span>
                     <div>
-                        <select class="selection-2" asp-for="SelectedComputer.extensionAttribute13"
+                        <select class="selection-2" asp-for="SelectedComputer.ExtensionAttribute13"
                                 name="extensionAttribute13">
                             <option></option>
                             <option>Personlig</option>
@@ -190,7 +190,7 @@
     var users = (@Html.Raw(Json.Serialize(ViewBag.Users))).filter(x => x.displayName);
 
     var button = document.getElementById("submit")
-    var select = document.getElementById("SelectedComputer_name").value
+    var select = document.getElementById("SelectedComputer_Name").value
 
     if (select != "") {
         $('#submit').removeClass("disable");

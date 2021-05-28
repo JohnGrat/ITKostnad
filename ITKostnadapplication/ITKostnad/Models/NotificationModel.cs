@@ -9,13 +9,13 @@ namespace ITKostnad.Models
     public class NotificationModel
     {
 
-        public string message { get; set; }
+        public string Message { get; set; }
         //Description
-        public Position position { get; set; }
+        public Position Position { get; set; }
         //Förvaltning
-        public ToastType toastType { get; set; }
+        public ToastType ToastType { get; set; }
         //Plats
-        public int timeOut { get; set; }
+        public int TimeOut { get; set; }
 
     }
 }

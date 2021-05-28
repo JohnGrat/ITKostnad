@@ -9,19 +9,17 @@ namespace ITKostnad.Models
     {
         //This class is used for swaping information
         //Datornamn
-        public string name { get; set; }
-        //Description
-        public string description { get; set; }
+        public string Name { get; set; }
         //Förvaltning
-        public string department { get; set; }
+        public string Department { get; set; }
         //Plats
-        public string location { get; set; }
+        public string Location { get; set; }
         //Placering
-        public string physicalDeliveryOfficeName { get; set; }
+        public string PhysicalDeliveryOfficeName { get; set; }
         //Ansvarig
-        public string extensionAttribute9 { get; set; }
+        public string ExtensionAttribute9 { get; set; }
         //Delad/Personlig
-        public string extensionAttribute13 { get; set; }
+        public string ExtensionAttribute13 { get; set; }
         public string ReplaceString { get; set; }
     }
 }
