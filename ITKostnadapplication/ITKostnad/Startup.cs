@@ -35,6 +35,15 @@ namespace ITKostnad
             services.Configure<AppSettingsModel>(Configuration.GetSection("AppSettings"));
             services.AddMemoryCache();
 
+            services.Configure<IISServerOptions>(options => {
+                options.AutomaticAuthentication = true;
+            });
+
+            services.AddAuthentication(IISServerDefaults.AuthenticationScheme);
+            services.AddAuthorization(options => {
+                options.AddPolicy("ITK_Group", policy => policy.RequireRole(Configuration["SecuritySettings:ITK_Group"]));
+            });
+
 
         }
 

@@ -19,7 +19,7 @@ using ITKostnad.Helpers;
 
 namespace ITKostnad.Controllers
 {
-
+    [Authorize("ITK_Group")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
