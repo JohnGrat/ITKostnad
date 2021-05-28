@@ -13,6 +13,7 @@ using ITKostnad.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Threading;
+using Microsoft.AspNetCore.Server.IIS;
 
 namespace ITKostnad
 {
